@@ -291,10 +291,10 @@ void menuModelSelect(event_t event)
 #endif
 #endif
 
-#if defined(PCBX7)
-    case EVT_ROTARY_LEFT:
-    case EVT_ROTARY_RIGHT:
-#endif
+//#if defined(PCBX7)
+//    case EVT_ROTARY_LEFT:
+//    case EVT_ROTARY_RIGHT:
+//#endif
     case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_REPT(KEY_UP):
     case EVT_KEY_FIRST(KEY_DOWN):

@@ -165,23 +165,42 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
   }
 #endif
 
-  if (s_editMode>0 && event==EVT_ROTARY_RIGHT) {
-    newval += min<int>(rotencSpeed, i_max-val);
-    while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max) {
-      newval++;
-    }
+  //if (s_editMode>0 && event==EVT_ROTARY_RIGHT) {
+   // newval += min<int>(rotencSpeed, i_max-val);
+  //  while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max) {
+  //    newval++;
+  //  }
+    if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_PLUS) || event==EVT_KEY_REPT(KEY_PLUS))) {
+        do {
+          if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
+            newval += min(10, i_max-val);
+          }
+          else {
+            newval++;
+          }
+        } while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max);
     if (newval > i_max) {
       newval = val;
       AUDIO_KEY_ERROR();
     }
   }
-  else if (s_editMode>0 && event==EVT_ROTARY_LEFT) {
-    newval -= min<int>(rotencSpeed, val-i_min);
-    while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min) {
-      newval--;
-    }
+  //else if (s_editMode>0 && event==EVT_ROTARY_LEFT) {
+   // newval -= min<int>(rotencSpeed, val-i_min);
+  //  while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min) {
+  //    newval--;
+  //  }
+    else if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_MINUS) || event==EVT_KEY_REPT(KEY_MINUS))) {
+       do {
+         if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
+           newval -= min(10, val-i_min);
+         }
+         else {
+           newval--;
+         }
+       } while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min);
     if (newval < i_min) {
       newval = val;
+      killEvents(event);
       AUDIO_KEY_ERROR();
     }
   }
@@ -730,7 +749,8 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       l_posHorz = POS_HORZ_INIT(l_posVert);
       break;
 
-    case EVT_ROTARY_BREAK:
+    //case EVT_ROTARY_BREAK:
+      case EVT_KEY_BREAK(KEY_ENTER):
       if (s_editMode > 1) break;
       if (menuHorizontalPosition < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
         l_posHorz = 0;
@@ -772,7 +792,8 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       }
       break;
 
-    case EVT_ROTARY_RIGHT:
+   // case EVT_ROTARY_RIGHT:
+       CASE_EVT_ROTARY_RIGHT
     case EVT_KEY_FIRST(KEY_RIGHT):
       AUDIO_KEY_PRESS();
       // no break
@@ -803,7 +824,8 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       l_posHorz = POS_HORZ_INIT(l_posVert);
       break;
 
-    case EVT_ROTARY_LEFT:
+   // case EVT_ROTARY_LEFT:
+      CASE_EVT_ROTARY_LEFT
     case EVT_KEY_FIRST(KEY_LEFT):
       AUDIO_KEY_PRESS();
       // no break
