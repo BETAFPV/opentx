@@ -24,6 +24,8 @@ uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
 uint8_t mainRequestFlags = 0;
 
+uint8_t led_on_off_status = 0x00;
+uint8_t bat_low = 0;
 #if defined(STM32)
 void onUSBConnectMenu(const char *result)
 {
@@ -117,6 +119,8 @@ void checkBatteryAlarms()
   if (IS_TXBATT_WARNING() && g_vbat100mV>50) {
     AUDIO_TX_BATTERY_LOW();
     // TRACE("checkBatteryAlarms(): battery low");
+    bat_low = 1;
+
   }
 #if defined(PCBSKY9X)
   else if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
@@ -153,6 +157,18 @@ void checkBattery()
 void periodicTick_1s()
 {
   checkBattery();
+  if(bat_low == 1)
+  {
+      led_on_off_status = !led_on_off_status;
+      if(led_on_off_status == 0x00)
+      {
+            GPIO_LED_GPIO_ON(LED_BLUE_GPIO, LED_BLUE_GPIO_PIN);
+      }
+      else
+      {
+            GPIO_LED_GPIO_OFF(LED_BLUE_GPIO, LED_BLUE_GPIO_PIN);
+      }
+  }
 }
 
 void periodicTick_10s()

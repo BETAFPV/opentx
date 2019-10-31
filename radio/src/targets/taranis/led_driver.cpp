@@ -52,7 +52,7 @@ void ledRed()
 
 void ledGreen()
 {
-  ledOff();
+  //ledOff();
   GPIO_LED_GPIO_ON(LED_GREEN_GPIO, LED_GREEN_GPIO_PIN);
 }
 
